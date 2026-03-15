@@ -92,20 +92,25 @@ class LocalModelManager:
         self.model_full_name = self.MODEL_CONFIGS[model_name]["huggingface_id"]
         self.tp = self.MODEL_CONFIGS[model_name].get("tp", False)
 
+        model_kwargs = {
+            "torch_dtype": torch.bfloat16,
+            "attn_implementation": "flash_attention_2",
+        }
+
         if self.tp:
             print("Big model. Use all GPUs.")
             self.pipe = pipeline(
                 "image-text-to-text",
                 model=self.model_full_name,
                 device_map="auto",
-                dtype=torch.bfloat16,
+                model_kwargs=model_kwargs,
             )
         else:
             self.pipe = pipeline(
                 "image-text-to-text",
                 model=self.model_full_name,
                 device=self.device_id,
-                dtype=torch.bfloat16,
+                model_kwargs=model_kwargs,
             )
 
     def generate_response(

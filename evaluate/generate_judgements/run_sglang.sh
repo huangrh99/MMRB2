@@ -52,6 +52,11 @@ mkdir -p "$OUTPUT_DIR"
 # Derive a short name for output files
 SHORT_NAME=$(echo "$HF_MODEL_ID" | tr '/' '_' | tr '.' '-')
 
+# Log directory
+LOG_DIR="$SCRIPT_DIR/logs"
+mkdir -p "$LOG_DIR"
+SGLANG_LOG="$LOG_DIR/sglang_${SHORT_NAME}_$(date +%Y%m%d_%H%M%S).log"
+
 export SGLANG_BASE_URL="http://localhost:${PORT}/v1"
 
 echo "=========================================="
@@ -64,6 +69,7 @@ echo "Total GPUs:  $TOTAL_GPUS"
 echo "Workers:     $N_WORKERS"
 echo "Server:      http://localhost:${PORT}"
 echo "Output:      $OUTPUT_DIR"
+echo "Server log:  $SGLANG_LOG"
 echo ""
 
 # ----------------------------------------
@@ -83,7 +89,7 @@ if [ "$DP" -gt 1 ]; then
     SGLANG_ARGS+=(--dp-size "$DP")
 fi
 
-python -m sglang.launch_server "${SGLANG_ARGS[@]}" &
+python -m sglang.launch_server "${SGLANG_ARGS[@]}" > "$SGLANG_LOG" 2>&1 &
 
 SGLANG_PID=$!
 
@@ -93,7 +99,8 @@ MAX_WAIT=600
 WAITED=0
 while ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; do
     if ! kill -0 $SGLANG_PID 2>/dev/null; then
-        echo "Error: SGLang server process died."
+        echo "Error: SGLang server process died. Check log: $SGLANG_LOG"
+        tail -20 "$SGLANG_LOG"
         exit 1
     fi
     if [ $WAITED -ge $MAX_WAIT ]; then

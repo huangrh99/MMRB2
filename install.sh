@@ -2,30 +2,50 @@
 # MMRB2 环境安装脚本
 #
 # Usage:
-#   bash install.sh          # 使用当前 Python 环境
-#   bash install.sh venv     # 创建新的 venv（推荐，避免系统包冲突）
+#   bash install.sh          # pip 安装
+#   bash install.sh uv       # uv 安装（更快）
+#   bash install.sh venv     # 创建 venv + pip 安装
+#   bash install.sh uv-venv  # 创建 uv venv + uv 安装（推荐）
 
 set -e
 
-if [[ "$1" == "venv" ]]; then
-    echo "Creating venv at ~/mmrb2_env ..."
-    python3 -m venv ~/mmrb2_env
-    source ~/mmrb2_env/bin/activate
-    echo "Activated: $(which python)"
+MODE="${1:-pip}"
+
+# Setup venv if requested
+case "$MODE" in
+    venv)
+        echo "Creating venv at ~/mmrb2_env ..."
+        python3 -m venv ~/mmrb2_env
+        source ~/mmrb2_env/bin/activate
+        echo "Activated: $(which python)"
+        MODE="pip"
+        ;;
+    uv-venv)
+        echo "Creating uv venv at ~/mmrb2_env ..."
+        uv venv ~/mmrb2_env
+        source ~/mmrb2_env/bin/activate
+        echo "Activated: $(which python)"
+        MODE="uv"
+        ;;
+esac
+
+echo "Installing dependencies (${MODE})..."
+
+# Per Qwen3.5 official model card: both sglang and transformers from git main.
+# sglang main pins transformers==4.57.1, so install in order then override.
+
+if [[ "$MODE" == "uv" ]]; then
+    # uv: use --override to force transformers from main despite sglang's pin
+    uv pip install torch==2.9.1 \
+        'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
+        openai json-repair Pillow tqdm datasets huggingface_hub
+    uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
+else
+    pip install torch==2.9.1 \
+        'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
+        openai json-repair Pillow tqdm datasets huggingface_hub
+    pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 fi
-
-echo "Installing dependencies..."
-
-# Per Qwen3.5 official model card: both sglang and transformers must be installed from git main.
-# sglang main pins transformers==4.57.1, so we install them in order and override.
-
-# Step 1: sglang from main (brings transformers==4.57.1 as dep)
-pip install torch==2.9.1 \
-    'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
-    openai json-repair Pillow tqdm datasets huggingface_hub
-
-# Step 2: override transformers with latest main (--no-deps to avoid conflict)
-pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 
 echo ""
 echo "Done. Versions:"

@@ -38,6 +38,8 @@ class LocalPairwiseEvaluator(BasePairwiseEvaluator):
         Returns:
             Parsed JSON as a dictionary.
         """
+        # Remove thinking tags (e.g., from Qwen3.5 thinking mode)
+        text = re.sub(r"<think>.*?</think>", "", text.strip(), flags=re.DOTALL)
         # Remove markdown code block formatting
         text = re.sub(r"^```(?:json)?\s*\n?", "", text.strip())
         text = re.sub(r"\n?```\s*$", "", text.strip())
@@ -111,3 +113,59 @@ class Qwen3VL8BPairwiseEvaluator(LocalPairwiseEvaluator):
 
     def __init__(self, device_id: int = None):
         super().__init__(model_name="qwen3-vl-8b", device_id=device_id)
+
+
+class Qwen35VL08BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-0.8B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-0.8b", device_id=device_id)
+
+
+class Qwen35VL2BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-2B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-2b", device_id=device_id)
+
+
+class Qwen35VL4BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-4B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-4b", device_id=device_id)
+
+
+class Qwen35VL9BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-9B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-9b", device_id=device_id)
+
+
+class Qwen35VL27BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-27B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-27b", device_id=device_id)
+
+
+class Qwen35VL35BA3BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-35B-A3B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-35b-a3b", device_id=device_id)
+
+
+class Qwen35VL122BA10BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-122B-A10B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-122b-a10b", device_id=device_id)
+
+
+class Qwen35VL397BA17BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """Qwen3.5-397B-A17B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="qwen3.5-397b-a17b", device_id=device_id)

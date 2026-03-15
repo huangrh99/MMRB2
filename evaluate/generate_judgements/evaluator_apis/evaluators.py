@@ -6,6 +6,14 @@ from .llm_judges import (
     Gemini25FlashPairwiseEvaluator,
     GPT4oPairwiseEvaluator,
     Qwen3VL8BPairwiseEvaluator,
+    Qwen35VL08BPairwiseEvaluator,
+    Qwen35VL2BPairwiseEvaluator,
+    Qwen35VL4BPairwiseEvaluator,
+    Qwen35VL9BPairwiseEvaluator,
+    Qwen35VL27BPairwiseEvaluator,
+    Qwen35VL35BA3BPairwiseEvaluator,
+    Qwen35VL122BA10BPairwiseEvaluator,
+    Qwen35VL397BA17BPairwiseEvaluator,
 )
 
 
@@ -53,6 +61,102 @@ EVALUATORS = {
     },
     "qwen3vl8b-pairwise": {
         "class": Qwen3VL8BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl08b-pairwise": {
+        "class": Qwen35VL08BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl2b-pairwise": {
+        "class": Qwen35VL2BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl4b-pairwise": {
+        "class": Qwen35VL4BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl9b-pairwise": {
+        "class": Qwen35VL9BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl27b-pairwise": {
+        "class": Qwen35VL27BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl35ba3b-pairwise": {
+        "class": Qwen35VL35BA3BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl122ba10b-pairwise": {
+        "class": Qwen35VL122BA10BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "qwen35vl397ba17b-pairwise": {
+        "class": Qwen35VL397BA17BPairwiseEvaluator,
         "type": EvaluatorTypes.PAIRWISE,
         "is_api_based": False,
         "capabilities": [

@@ -15,6 +15,34 @@ class LocalModelManager:
         "qwen3-vl-8b": {
             "huggingface_id": "Qwen/Qwen3-VL-8B-Instruct",
         },
+        "qwen3.5-0.8b": {
+            "huggingface_id": "Qwen/Qwen3.5-0.8B",
+        },
+        "qwen3.5-2b": {
+            "huggingface_id": "Qwen/Qwen3.5-2B",
+        },
+        "qwen3.5-4b": {
+            "huggingface_id": "Qwen/Qwen3.5-4B",
+        },
+        "qwen3.5-9b": {
+            "huggingface_id": "Qwen/Qwen3.5-9B",
+        },
+        "qwen3.5-27b": {
+            "huggingface_id": "Qwen/Qwen3.5-27B",
+            "tp": True,
+        },
+        "qwen3.5-35b-a3b": {
+            "huggingface_id": "Qwen/Qwen3.5-35B-A3B",
+            "tp": True,
+        },
+        "qwen3.5-122b-a10b": {
+            "huggingface_id": "Qwen/Qwen3.5-122B-A10B",
+            "tp": True,
+        },
+        "qwen3.5-397b-a17b": {
+            "huggingface_id": "Qwen/Qwen3.5-397B-A17B",
+            "tp": True,
+        },
     }
 
     def __init__(

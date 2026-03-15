@@ -16,11 +16,16 @@ fi
 
 echo "Installing dependencies..."
 
-# Qwen3.5 requires latest main branch of both sglang and transformers (PyPI releases lag behind)
-pip install torch==2.9.1 \
-    'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
-    'transformers @ git+https://github.com/huggingface/transformers.git@main' \
-    openai json-repair Pillow tqdm datasets huggingface_hub
+# Step 1: Install torch and other deps first
+pip install torch==2.9.1 openai json-repair Pillow tqdm datasets huggingface_hub
+
+# Step 2: Install sglang from transformers-v5 compatible branch
+#   PyPI sglang 0.5.9 pins transformers==4.57.1 which conflicts with Qwen3.5 (needs >=5.2)
+#   This branch removes the pin and adds Qwen3.5 support
+pip install -e 'git+https://github.com/joninco/sglang.git@feat/transformers-v5-qwen35-nvfp4#subdirectory=python&egg=sglang[all]'
+
+# Step 3: Install transformers v5 (after sglang, to override any pinned version)
+pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 
 echo ""
 echo "Done. Versions:"

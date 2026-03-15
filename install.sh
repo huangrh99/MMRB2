@@ -16,11 +16,16 @@ fi
 
 echo "Installing dependencies..."
 
-# SGLang main branch has built-in Qwen3.5 model implementation (not relying on transformers v5).
-# It pins transformers==4.57.1 for tokenizer/processor only.
+# Per Qwen3.5 official model card: both sglang and transformers must be installed from git main.
+# sglang main pins transformers==4.57.1, so we install them in order and override.
+
+# Step 1: sglang from main (brings transformers==4.57.1 as dep)
 pip install torch==2.9.1 \
     'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
     openai json-repair Pillow tqdm datasets huggingface_hub
+
+# Step 2: override transformers with latest main (--no-deps to avoid conflict)
+pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 
 echo ""
 echo "Done. Versions:"

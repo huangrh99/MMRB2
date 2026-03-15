@@ -43,6 +43,26 @@ class LocalModelManager:
             "huggingface_id": "Qwen/Qwen3.5-397B-A17B",
             "tp": True,
         },
+        # InternVL3.5 (-HF = native HuggingFace transformers pipeline support)
+        "internvl3.5-1b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-1B-HF",
+        },
+        "internvl3.5-2b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-2B-HF",
+        },
+        "internvl3.5-4b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-4B-HF",
+        },
+        "internvl3.5-8b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-8B-HF",
+        },
+        "internvl3.5-14b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-14B-HF",
+        },
+        "internvl3.5-38b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-38B-HF",
+            "tp": True,
+        },
     }
 
     def __init__(

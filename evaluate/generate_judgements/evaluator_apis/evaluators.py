@@ -14,6 +14,12 @@ from .llm_judges import (
     Qwen35VL35BA3BPairwiseEvaluator,
     Qwen35VL122BA10BPairwiseEvaluator,
     Qwen35VL397BA17BPairwiseEvaluator,
+    InternVL35_1BPairwiseEvaluator,
+    InternVL35_2BPairwiseEvaluator,
+    InternVL35_4BPairwiseEvaluator,
+    InternVL35_8BPairwiseEvaluator,
+    InternVL35_14BPairwiseEvaluator,
+    InternVL35_38BPairwiseEvaluator,
 )
 
 
@@ -157,6 +163,78 @@ EVALUATORS = {
     },
     "qwen35vl397ba17b-pairwise": {
         "class": Qwen35VL397BA17BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-1b-pairwise": {
+        "class": InternVL35_1BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-2b-pairwise": {
+        "class": InternVL35_2BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-4b-pairwise": {
+        "class": InternVL35_4BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-8b-pairwise": {
+        "class": InternVL35_8BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-14b-pairwise": {
+        "class": InternVL35_14BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-38b-pairwise": {
+        "class": InternVL35_38BPairwiseEvaluator,
         "type": EvaluatorTypes.PAIRWISE,
         "is_api_based": False,
         "capabilities": [

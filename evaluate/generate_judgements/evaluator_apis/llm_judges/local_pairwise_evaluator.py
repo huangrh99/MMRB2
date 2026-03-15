@@ -169,3 +169,45 @@ class Qwen35VL397BA17BPairwiseEvaluator(LocalPairwiseEvaluator):
 
     def __init__(self, device_id: int = None):
         super().__init__(model_name="qwen3.5-397b-a17b", device_id=device_id)
+
+
+class InternVL35_1BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-1B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-1b", device_id=device_id)
+
+
+class InternVL35_2BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-2B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-2b", device_id=device_id)
+
+
+class InternVL35_4BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-4B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-4b", device_id=device_id)
+
+
+class InternVL35_8BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-8B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-8b", device_id=device_id)
+
+
+class InternVL35_14BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-14B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-14b", device_id=device_id)
+
+
+class InternVL35_38BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-38B based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-38b", device_id=device_id)

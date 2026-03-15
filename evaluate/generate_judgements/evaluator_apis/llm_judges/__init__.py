@@ -15,6 +15,12 @@ from .local_pairwise_evaluator import (
     Qwen35VL35BA3BPairwiseEvaluator,
     Qwen35VL122BA10BPairwiseEvaluator,
     Qwen35VL397BA17BPairwiseEvaluator,
+    InternVL35_1BPairwiseEvaluator,
+    InternVL35_2BPairwiseEvaluator,
+    InternVL35_4BPairwiseEvaluator,
+    InternVL35_8BPairwiseEvaluator,
+    InternVL35_14BPairwiseEvaluator,
+    InternVL35_38BPairwiseEvaluator,
 )
 
 __all__ = [
@@ -29,4 +35,10 @@ __all__ = [
     "Qwen35VL35BA3BPairwiseEvaluator",
     "Qwen35VL122BA10BPairwiseEvaluator",
     "Qwen35VL397BA17BPairwiseEvaluator",
+    "InternVL35_1BPairwiseEvaluator",
+    "InternVL35_2BPairwiseEvaluator",
+    "InternVL35_4BPairwiseEvaluator",
+    "InternVL35_8BPairwiseEvaluator",
+    "InternVL35_14BPairwiseEvaluator",
+    "InternVL35_38BPairwiseEvaluator",
 ]

@@ -16,9 +16,7 @@ fi
 
 echo "Installing dependencies..."
 
-pip install torch==2.8.0
-pip install 'transformers>=5.2.0' 'sglang[all]>=0.5.9'
-pip install openai json-repair Pillow tqdm datasets huggingface_hub
+pip install torch==2.8.0 'transformers>=5.2.0' 'sglang[all]>=0.5.9' openai json-repair Pillow tqdm datasets huggingface_hub
 
 echo ""
 echo "Done. Versions:"

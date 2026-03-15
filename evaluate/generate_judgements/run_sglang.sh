@@ -5,19 +5,23 @@
 # the OpenAI-compatible API. Much faster than transformers pipeline.
 #
 # Usage:
-#   bash run_sglang.sh <HF_MODEL_ID> [N_WORKERS] [PORT] [TP]
+#   bash run_sglang.sh <HF_MODEL_ID> [OPTIONS]
 #
-# Arguments:
+# Options (positional):
 #   HF_MODEL_ID  HuggingFace model ID (required)
 #   N_WORKERS    Number of parallel evaluation workers (default: 8)
 #   PORT         SGLang server port (default: 8000)
-#   TP           Tensor parallel degree (default: 1)
+#   TP           Tensor parallel degree per replica (default: 1)
+#   DP           Data parallel degree — number of model replicas (default: 1)
+#
+# GPU usage: TP * DP GPUs total. Each replica uses TP GPUs.
 #
 # Examples:
-#   bash run_sglang.sh Qwen/Qwen3.5-9B              # 9B, 1 GPU, 8 workers
-#   bash run_sglang.sh Qwen/Qwen3.5-9B 16           # 9B, 1 GPU, 16 workers
-#   bash run_sglang.sh Qwen/Qwen3.5-27B 8 8000 4    # 27B, 4-way TP, 8 workers
-#   bash run_sglang.sh OpenGVLab/InternVL3_5-8B-HF   # InternVL3.5-8B
+#   bash run_sglang.sh Qwen/Qwen3.5-9B                  # 1 GPU, 8 workers
+#   bash run_sglang.sh Qwen/Qwen3.5-9B 16               # 1 GPU, 16 workers
+#   bash run_sglang.sh Qwen/Qwen3.5-9B 16 8000 1 8      # 8 GPU DP, 16 workers
+#   bash run_sglang.sh Qwen/Qwen3.5-27B 8 8000 4 2      # 4-way TP x 2 DP = 8 GPUs
+#   bash run_sglang.sh OpenGVLab/InternVL3_5-8B-HF 16 8000 1 8  # InternVL, 8 DP
 
 set -e
 
@@ -27,10 +31,13 @@ cd "$SCRIPT_DIR"
 export PYTHONPATH="$SCRIPT_DIR:$PYTHONPATH"
 
 # Parse arguments
-HF_MODEL_ID="${1:?Error: HF_MODEL_ID is required. Usage: bash run_sglang.sh <HF_MODEL_ID> [N_WORKERS] [PORT] [TP]}"
+HF_MODEL_ID="${1:?Error: HF_MODEL_ID is required. Usage: bash run_sglang.sh <HF_MODEL_ID> [N_WORKERS] [PORT] [TP] [DP]}"
 N_WORKERS="${2:-8}"
 PORT="${3:-8000}"
 TP="${4:-1}"
+DP="${5:-1}"
+
+TOTAL_GPUS=$((TP * DP))
 
 # Data paths
 BASE_DATA_PATH="${MMRB2_DATA_PATH:-$SCRIPT_DIR/../../benchmark}"
@@ -46,7 +53,9 @@ echo "=========================================="
 echo "MMRB2 Benchmark - SGLang Backend"
 echo "=========================================="
 echo "Model:       $HF_MODEL_ID"
-echo "TP:          $TP"
+echo "TP:          $TP  (tensor parallel per replica)"
+echo "DP:          $DP  (data parallel replicas)"
+echo "Total GPUs:  $TOTAL_GPUS"
 echo "Workers:     $N_WORKERS"
 echo "Server:      http://localhost:${PORT}"
 echo "Output:      $OUTPUT_DIR"
@@ -56,18 +65,26 @@ echo ""
 # Step 1: Start SGLang server
 # ----------------------------------------
 echo "[Step 1] Starting SGLang server..."
-python -m sglang.launch_server \
-    --model-path "$HF_MODEL_ID" \
-    --port "$PORT" \
-    --tp "$TP" \
-    --dtype bfloat16 \
-    --mem-fraction-static 0.85 &
+
+SGLANG_ARGS=(
+    --model-path "$HF_MODEL_ID"
+    --port "$PORT"
+    --tp "$TP"
+    --dtype bfloat16
+    --mem-fraction-static 0.85
+)
+
+if [ "$DP" -gt 1 ]; then
+    SGLANG_ARGS+=(--dp-size "$DP")
+fi
+
+python -m sglang.launch_server "${SGLANG_ARGS[@]}" &
 
 SGLANG_PID=$!
 
 # Wait for server to be ready
 echo "Waiting for server to start (PID: $SGLANG_PID)..."
-MAX_WAIT=300
+MAX_WAIT=600
 WAITED=0
 while ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; do
     if ! kill -0 $SGLANG_PID 2>/dev/null; then
@@ -81,7 +98,9 @@ while ! curl -s "http://localhost:${PORT}/health" > /dev/null 2>&1; do
     fi
     sleep 2
     WAITED=$((WAITED + 2))
-    echo "  Waiting... (${WAITED}s)"
+    if [ $((WAITED % 10)) -eq 0 ]; then
+        echo "  Waiting... (${WAITED}s)"
+    fi
 done
 echo "Server is ready!"
 echo ""

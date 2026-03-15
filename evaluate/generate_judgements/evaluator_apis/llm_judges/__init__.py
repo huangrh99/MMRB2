@@ -22,6 +22,7 @@ from .local_pairwise_evaluator import (
     InternVL35_14BPairwiseEvaluator,
     InternVL35_38BPairwiseEvaluator,
 )
+from .sglang_pairwise_evaluator import SglangPairwiseEvaluator
 
 __all__ = [
     "GPT4oPairwiseEvaluator",
@@ -41,4 +42,5 @@ __all__ = [
     "InternVL35_8BPairwiseEvaluator",
     "InternVL35_14BPairwiseEvaluator",
     "InternVL35_38BPairwiseEvaluator",
+    "SglangPairwiseEvaluator",
 ]

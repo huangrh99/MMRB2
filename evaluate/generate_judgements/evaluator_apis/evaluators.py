@@ -20,6 +20,7 @@ from .llm_judges import (
     InternVL35_8BPairwiseEvaluator,
     InternVL35_14BPairwiseEvaluator,
     InternVL35_38BPairwiseEvaluator,
+    SglangPairwiseEvaluator,
 )
 
 
@@ -237,6 +238,18 @@ EVALUATORS = {
         "class": InternVL35_38BPairwiseEvaluator,
         "type": EvaluatorTypes.PAIRWISE,
         "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "sglang-pairwise": {
+        "class": SglangPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": True,
         "capabilities": [
             EvaluatorCapabilities.IMAGE,
             EvaluatorCapabilities.EDIT,

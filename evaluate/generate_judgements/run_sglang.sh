@@ -25,6 +25,11 @@
 
 set -e
 
+# Auto-activate venv
+if [ -d ~/mmrb2_env ] && [ -z "$VIRTUAL_ENV" ]; then
+    source ~/mmrb2_env/bin/activate
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 

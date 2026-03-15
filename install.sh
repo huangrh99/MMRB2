@@ -10,7 +10,10 @@ echo "Installing dependencies..."
 
 uv pip install torch==2.9.1 \
     'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
-    openai json-repair Pillow tqdm datasets huggingface_hub
+    openai json-repair Pillow tqdm datasets \
+    'huggingface_hub>=0.30.0' \
+    'google-generativeai>=0.3.0' \
+    'google-genai>=1.28.0'
 
 uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 

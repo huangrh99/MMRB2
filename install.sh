@@ -16,7 +16,11 @@ fi
 
 echo "Installing dependencies..."
 
-pip install torch==2.9.1 'transformers>=5.2.0' 'sglang[all]>=0.5.9' openai json-repair Pillow tqdm datasets huggingface_hub
+# Qwen3.5 requires latest main branch of both sglang and transformers (PyPI releases lag behind)
+pip install torch==2.9.1 \
+    'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
+    'transformers @ git+https://github.com/huggingface/transformers.git@main' \
+    openai json-repair Pillow tqdm datasets huggingface_hub
 
 echo ""
 echo "Done. Versions:"

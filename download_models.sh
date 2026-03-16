@@ -13,13 +13,21 @@ MODEL_DIR=/mnt/hdfs/user/huangrunhui/huggingface_models
 mkdir -p "$DOWNLOAD_DIR" "$MODEL_DIR"
 
 MODELS=(
-    # Qwen3.5
+    # Qwen3.5 (all sizes)
+    Qwen/Qwen3.5-0.8B
+    Qwen/Qwen3.5-2B
     Qwen/Qwen3.5-4B
     Qwen/Qwen3.5-9B
     Qwen/Qwen3.5-27B
-    # InternVL3.5
+    Qwen/Qwen3.5-35B-A3B
+    Qwen/Qwen3.5-122B-A10B
+    Qwen/Qwen3.5-397B-A17B
+    # InternVL3.5 -HF (all sizes)
+    OpenGVLab/InternVL3_5-1B-HF
+    OpenGVLab/InternVL3_5-2B-HF
     OpenGVLab/InternVL3_5-4B-HF
     OpenGVLab/InternVL3_5-8B-HF
+    OpenGVLab/InternVL3_5-14B-HF
     OpenGVLab/InternVL3_5-38B-HF
 )
 

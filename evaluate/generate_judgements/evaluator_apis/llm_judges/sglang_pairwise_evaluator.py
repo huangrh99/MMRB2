@@ -110,7 +110,12 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
     def _chat_with_retry(self, messages: list, max_retries: int = 3) -> str:
         """Call the API with retry logic."""
         extra_kwargs = {}
-        if not self.enable_thinking:
+        if self.enable_thinking:
+            # Qwen3.5 recommended: thinking mode for reasoning tasks
+            sampling = {"temperature": 1.0, "top_p": 0.95, "presence_penalty": 1.5}
+        else:
+            # Qwen3.5 recommended: non-thinking mode for general tasks
+            sampling = {"temperature": 0.7, "top_p": 0.8, "presence_penalty": 1.5}
             extra_kwargs["extra_body"] = {
                 "chat_template_kwargs": {"enable_thinking": False}
             }
@@ -120,8 +125,8 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
                 response = self.client.chat.completions.create(
                     model=self._model_name,
                     messages=messages,
-                    max_tokens=2000,
-                    temperature=1.0,
+                    max_tokens=8192 if self.enable_thinking else 4096,
+                    **sampling,
                     **extra_kwargs,
                 )
                 return response.choices[0].message.content
@@ -134,6 +139,7 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
     def parse_llm_json(self, text):
         """Parse JSON from LLM output, stripping thinking tags and code blocks."""
         text = re.sub(r"<think>.*?</think>", "", text.strip(), flags=re.DOTALL)
+        text = re.sub(r"<think>.*", "", text.strip(), flags=re.DOTALL)
         text = re.sub(r"^```(?:json)?\s*\n?", "", text.strip())
         text = re.sub(r"\n?```\s*$", "", text.strip())
 
@@ -179,17 +185,36 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
         messages = self._build_messages(content_list)
 
         outputs = []
+        max_parse_retries = 3
         for _ in range(n):
-            response_text = self._chat_with_retry(messages)
-            try:
-                parsed_response = self.parse_llm_json(response_text)
-            except ValueError as e:
-                raise ValueError(f"Failed to parse JSON: {e}")
+            parsed_response = None
+            for parse_attempt in range(max_parse_retries):
+                response_text = self._chat_with_retry(messages)
+                try:
+                    parsed_response = self.parse_llm_json(response_text)
+                except ValueError:
+                    print(f"Parse attempt {parse_attempt + 1}/{max_parse_retries} failed")
+                    continue
 
-            final_judgement = parsed_response["better_response"]
+                if isinstance(parsed_response, list):
+                    parsed_response = next(
+                        (x for x in parsed_response if isinstance(x, dict)), None
+                    )
+                if isinstance(parsed_response, dict) and "better_response" in parsed_response:
+                    break
+                else:
+                    print(
+                        f"Parse attempt {parse_attempt + 1}/{max_parse_retries}: "
+                        f"missing 'better_response' in {type(parsed_response).__name__}"
+                    )
+                    parsed_response = None
+
+            if not isinstance(parsed_response, dict) or "better_response" not in parsed_response:
+                raise ValueError("All parse retries exhausted. Model could not produce valid JSON.")
+
             outputs.append(
                 EvaluatorResult(
-                    judgement=final_judgement,
+                    judgement=parsed_response["better_response"],
                     metadata=parsed_response,
                 )
             )

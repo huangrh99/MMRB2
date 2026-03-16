@@ -40,6 +40,7 @@ class LocalPairwiseEvaluator(BasePairwiseEvaluator):
         """
         # Remove thinking tags (e.g., from Qwen3.5 thinking mode)
         text = re.sub(r"<think>.*?</think>", "", text.strip(), flags=re.DOTALL)
+        text = re.sub(r"<think>.*", "", text.strip(), flags=re.DOTALL)
         # Remove markdown code block formatting
         text = re.sub(r"^```(?:json)?\s*\n?", "", text.strip())
         text = re.sub(r"\n?```\s*$", "", text.strip())
@@ -89,18 +90,36 @@ class LocalPairwiseEvaluator(BasePairwiseEvaluator):
         content_list.extend(response_b)
 
         outputs = []
+        max_parse_retries = 3
         for _ in range(n):
-            response = self.model_manager.generate_response(content_list)
-            try:
-                parsed_response = self.parse_llm_json(response)
-            except ValueError as e:
-                raise ValueError(f"Failed to parse JSON: {e}")
+            parsed_response = None
+            for parse_attempt in range(max_parse_retries):
+                response = self.model_manager.generate_response(content_list)
+                try:
+                    parsed_response = self.parse_llm_json(response)
+                except ValueError:
+                    print(f"Parse attempt {parse_attempt + 1}/{max_parse_retries} failed")
+                    continue
 
-            final_judgement = parsed_response["better_response"]
+                if isinstance(parsed_response, list):
+                    parsed_response = next(
+                        (x for x in parsed_response if isinstance(x, dict)), None
+                    )
+                if isinstance(parsed_response, dict) and "better_response" in parsed_response:
+                    break
+                else:
+                    print(
+                        f"Parse attempt {parse_attempt + 1}/{max_parse_retries}: "
+                        f"missing 'better_response' in {type(parsed_response).__name__}"
+                    )
+                    parsed_response = None
+
+            if not isinstance(parsed_response, dict) or "better_response" not in parsed_response:
+                raise ValueError("All parse retries exhausted. Model could not produce valid JSON.")
 
             outputs.append(
                 EvaluatorResult(
-                    judgement=final_judgement,
+                    judgement=parsed_response["better_response"],
                     metadata=parsed_response,
                 )
             )

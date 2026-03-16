@@ -116,8 +116,8 @@ class LocalModelManager:
     def generate_response(
         self,
         prompt: List[List[str]],
-        max_new_tokens: int = 2000,
-        temperature: float = 1.0,
+        max_new_tokens: int = 8192,
+        temperature: float = 0.6,
     ) -> str:
         """Generate a response from the model.
 

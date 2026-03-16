@@ -126,10 +126,11 @@ def process_pairs_with_evaluator(
         response_b = fix_relative_path(response_b, base_dir)
 
         # Get evaluation results (n judgements) - forward direction
+        max_retries = 3
         judge_results = []
         n_failure = 0
 
-        while n_failure < n and len(judge_results) < n:
+        while n_failure < max_retries and len(judge_results) < n:
             try:
                 judge_result = evaluator.pairwise_evaluate(
                     prompt_content=prompt_content,
@@ -142,13 +143,13 @@ def process_pairs_with_evaluator(
                 judge_results.extend(judge_result)
             except Exception as e:
                 n_failure += 1
-                print(f"Error evaluating pair {pair_id}: {e}")
+                print(f"Error evaluating pair {pair_id} forward (attempt {n_failure}/{max_retries}): {e}")
                 continue
 
         # Get evaluation results - reverse direction (swap A and B)
         judge_results_reverse = []
         n_failure = 0
-        while n_failure < n and len(judge_results_reverse) < n:
+        while n_failure < max_retries and len(judge_results_reverse) < n:
             try:
                 judge_result = evaluator.pairwise_evaluate(
                     prompt_content=prompt_content,
@@ -161,7 +162,7 @@ def process_pairs_with_evaluator(
                 judge_results_reverse.extend(judge_result)
             except Exception as e:
                 n_failure += 1
-                print(f"Error evaluating pair {pair_id}: {e}")
+                print(f"Error evaluating pair {pair_id} reverse (attempt {n_failure}/{max_retries}): {e}")
                 continue
 
         # Convert EvaluatorResult objects to dictionaries for JSON serialization

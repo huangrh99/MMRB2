@@ -29,12 +29,22 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
         python -m sglang.launch_server --model-path Qwen/Qwen3.5-9B --port 8000
 
     Configuration via environment variables:
-        SGLANG_BASE_URL:   API base URL (default: http://localhost:8000/v1)
-        SGLANG_MODEL_NAME: Model name to pass to the API (default: auto-detect)
-        SGLANG_API_KEY:    API key if required (default: EMPTY)
+        SGLANG_BASE_URL:       API base URL (default: http://localhost:8000/v1)
+        SGLANG_MODEL_NAME:     Model name to pass to the API (default: auto-detect)
+        SGLANG_API_KEY:        API key if required (default: EMPTY)
+        SGLANG_ENABLE_THINKING: Enable thinking mode (default: "true")
     """
 
-    def __init__(self, device_id: int = None):
+    def __init__(self, device_id: int = None, enable_thinking: bool = True):
+        # Resolve thinking mode: constructor arg can be overridden by env var
+        env_thinking = os.environ.get("SGLANG_ENABLE_THINKING", "").lower()
+        if env_thinking in ("false", "0", "no"):
+            self.enable_thinking = False
+        elif env_thinking in ("true", "1", "yes"):
+            self.enable_thinking = True
+        else:
+            self.enable_thinking = enable_thinking
+
         self.base_url = os.environ.get(
             "SGLANG_BASE_URL", "http://localhost:8000/v1"
         )
@@ -56,11 +66,16 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
                     "Set SGLANG_MODEL_NAME to override."
                 )
 
-        print(f"SGLang evaluator: base_url={self.base_url}, model={self._model_name}")
+        thinking_str = "on" if self.enable_thinking else "off"
+        print(
+            f"SGLang evaluator: base_url={self.base_url}, "
+            f"model={self._model_name}, thinking={thinking_str}"
+        )
 
     @property
     def evaluator_name(self):
-        return f"sglang_{self._model_name}_pairwise_evaluator"
+        suffix = "_nothink" if not self.enable_thinking else ""
+        return f"sglang_{self._model_name}{suffix}_pairwise_evaluator"
 
     @staticmethod
     def _encode_image(image_path: str) -> dict:
@@ -94,6 +109,12 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
 
     def _chat_with_retry(self, messages: list, max_retries: int = 3) -> str:
         """Call the API with retry logic."""
+        extra_kwargs = {}
+        if not self.enable_thinking:
+            extra_kwargs["extra_body"] = {
+                "chat_template_kwargs": {"enable_thinking": False}
+            }
+
         for attempt in range(max_retries):
             try:
                 response = self.client.chat.completions.create(
@@ -101,6 +122,7 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
                     messages=messages,
                     max_tokens=2000,
                     temperature=1.0,
+                    **extra_kwargs,
                 )
                 return response.choices[0].message.content
             except Exception as e:
@@ -173,3 +195,14 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
             )
 
         return outputs
+
+
+class SglangNoThinkPairwiseEvaluator(SglangPairwiseEvaluator):
+    """SGLang evaluator with thinking mode disabled.
+
+    Passes ``extra_body={"chat_template_kwargs": {"enable_thinking": False}}``
+    to the API so models like Qwen3.5 run in non-thinking mode.
+    """
+
+    def __init__(self, device_id: int = None):
+        super().__init__(device_id=device_id, enable_thinking=False)

@@ -14,10 +14,10 @@ uv pip install torch==2.9.1 \
 
 uv pip install -U huggingface_hub \
     google-generativeai \
-    google-genai
+    google-genai    
 
-# flash-attn: prefer prebuilt wheel, fallback to source build
-uv pip install flash-attn || uv pip install flash-attn --no-build-isolation
+# flash-attn: --no-build-isolation so it can find torch already installed above
+uv pip install flash-attn --no-build-isolation
 
 uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 

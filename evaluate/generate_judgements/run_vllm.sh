@@ -77,14 +77,22 @@ echo ""
 # ----------------------------------------
 echo "[Step 1] Starting vLLM server..."
 
-vllm serve "$HF_MODEL_ID" \
-    --port "$PORT" \
-    --tensor-parallel-size "$TP" \
-    --dtype bfloat16 \
-    --gpu-memory-utilization 0.85 \
-    --max-model-len 32768 \
-    --reasoning-parser qwen3 \
-    > "$VLLM_LOG" 2>&1 &
+VLLM_ARGS=(
+    "$HF_MODEL_ID"
+    --port "$PORT"
+    --tensor-parallel-size "$TP"
+    --dtype bfloat16
+    --gpu-memory-utilization 0.85
+)
+
+# Qwen3.5: add reasoning parser and 256K context
+if [[ "$HF_MODEL_ID" == *Qwen3.5* || "$HF_MODEL_ID" == *Qwen3* ]]; then
+    VLLM_ARGS+=(--reasoning-parser qwen3 --max-model-len 262144)
+else
+    VLLM_ARGS+=(--max-model-len 32768)
+fi
+
+vllm serve "${VLLM_ARGS[@]}" > "$VLLM_LOG" 2>&1 &
 
 VLLM_PID=$!
 

@@ -96,9 +96,12 @@ SGLANG_ARGS=(
     --tp "$TP"
     --dtype bfloat16
     --mem-fraction-static 0.85
-    --reasoning-parser qwen3
-    --context-length 262144
 )
+
+# Qwen3.5: add reasoning parser and 256K context
+if [[ "$HF_MODEL_ID" == *Qwen3.5* || "$HF_MODEL_ID" == *Qwen3* ]]; then
+    SGLANG_ARGS+=(--reasoning-parser qwen3 --context-length 262144)
+fi
 
 if [ "$DP" -gt 1 ]; then
     SGLANG_ARGS+=(--dp-size "$DP")

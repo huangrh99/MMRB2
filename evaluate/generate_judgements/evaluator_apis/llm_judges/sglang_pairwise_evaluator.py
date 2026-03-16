@@ -3,6 +3,7 @@
 
 import base64
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -93,14 +94,15 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
 
         # Pad extreme aspect ratio images to a safe ratio
         if aspect > max_aspect_ratio:
-            if w > h:
-                new_h = max(int(w / max_aspect_ratio), 1)
-                padded = PILImage.new(img.mode, (w, new_h), (0, 0, 0))
-                padded.paste(img, (0, (new_h - h) // 2))
+            if w >= h:
+                # Ensure new_h makes the ratio <= max_aspect_ratio
+                new_h = max(int(math.ceil(w / max_aspect_ratio)), h)
+                padded = PILImage.new("RGB", (w, new_h), (0, 0, 0))
+                padded.paste(img.convert("RGB"), (0, (new_h - h) // 2))
             else:
-                new_w = max(int(h / max_aspect_ratio), 1)
-                padded = PILImage.new(img.mode, (new_w, h), (0, 0, 0))
-                padded.paste(img, ((new_w - w) // 2, 0))
+                new_w = max(int(math.ceil(h / max_aspect_ratio)), w)
+                padded = PILImage.new("RGB", (new_w, h), (0, 0, 0))
+                padded.paste(img.convert("RGB"), ((new_w - w) // 2, 0))
             img = padded
 
         ext = Path(image_path).suffix.lower()

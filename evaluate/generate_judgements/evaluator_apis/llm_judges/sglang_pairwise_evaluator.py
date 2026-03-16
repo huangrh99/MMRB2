@@ -125,7 +125,7 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
                 response = self.client.chat.completions.create(
                     model=self._model_name,
                     messages=messages,
-                    max_tokens=8192 if self.enable_thinking else 4096,
+                    max_tokens=16384 if self.enable_thinking else 8192,
                     **sampling,
                     **extra_kwargs,
                 )

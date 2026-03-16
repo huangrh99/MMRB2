@@ -16,21 +16,14 @@ fi
 echo "Installing dependencies..."
 
 # vLLM from main (Qwen3.5 official recommendation)
-# Let vLLM pull its required torch version automatically
+# Let vLLM manage its own torch + transformers versions
 uv pip install \
     'vllm @ git+https://github.com/vllm-project/vllm.git@main' \
-    openai json-repair Pillow tqdm datasets
-
-uv pip install -U huggingface_hub \
-    google-generativeai \
-    google-genai
+    openai json-repair Pillow tqdm datasets \
+    huggingface_hub google-generativeai google-genai sympy
 
 # flash-attn: --no-build-isolation so it can find torch already installed above
 uv pip install flash-attn --no-build-isolation
-
-uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
-
-uv pip install sympy httpx==0.23.3
 
 echo ""
 echo "Done. Versions:"

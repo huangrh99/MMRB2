@@ -21,10 +21,13 @@ uv pip install -U huggingface_hub \
     google-generativeai \
     google-genai
 
+
 # flash-attn: --no-build-isolation so it can find torch already installed above
 uv pip install flash-attn --no-build-isolation
 
 uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
+
+uv pip install sympy httpx==0.23.3
 
 echo ""
 echo "Done. Versions:"
@@ -34,4 +37,5 @@ print(f'  torch:        {torch.__version__}')
 print(f'  transformers: {transformers.__version__}')
 print(f'  sglang:       {sglang.__version__}')
 "
+
 echo "To activate: source ~/mmrb2_env/bin/activate"

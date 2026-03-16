@@ -96,6 +96,8 @@ SGLANG_ARGS=(
     --tp "$TP"
     --dtype bfloat16
     --mem-fraction-static 0.85
+    --reasoning-parser qwen3
+    --context-length 262144
 )
 
 if [ "$DP" -gt 1 ]; then

@@ -78,8 +78,31 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
         return f"sglang_{self._model_name}{suffix}_pairwise_evaluator"
 
     @staticmethod
-    def _encode_image(image_path: str) -> dict:
-        """Encode a local image to base64 OpenAI content format."""
+    def _encode_image(image_path: str, max_aspect_ratio: float = 199.0) -> dict:
+        """Encode a local image to base64 OpenAI content format.
+
+        Images with extreme aspect ratios are padded to fit within
+        max_aspect_ratio to avoid server rejection.
+        """
+        from PIL import Image as PILImage
+        import io
+
+        img = PILImage.open(image_path)
+        w, h = img.size
+        aspect = max(w, h) / max(min(w, h), 1)
+
+        # Pad extreme aspect ratio images to a safe ratio
+        if aspect > max_aspect_ratio:
+            if w > h:
+                new_h = max(int(w / max_aspect_ratio), 1)
+                padded = PILImage.new(img.mode, (w, new_h), (0, 0, 0))
+                padded.paste(img, (0, (new_h - h) // 2))
+            else:
+                new_w = max(int(h / max_aspect_ratio), 1)
+                padded = PILImage.new(img.mode, (new_w, h), (0, 0, 0))
+                padded.paste(img, ((new_w - w) // 2, 0))
+            img = padded
+
         ext = Path(image_path).suffix.lower()
         mime = {
             ".jpg": "image/jpeg",
@@ -88,9 +111,11 @@ class SglangPairwiseEvaluator(BasePairwiseEvaluator):
             ".gif": "image/gif",
             ".webp": "image/webp",
         }.get(ext, "image/jpeg")
+        fmt = "JPEG" if mime == "image/jpeg" else "PNG"
 
-        with open(image_path, "rb") as f:
-            b64 = base64.b64encode(f.read()).decode("utf-8")
+        buf = io.BytesIO()
+        img.convert("RGB").save(buf, format=fmt)
+        b64 = base64.b64encode(buf.getvalue()).decode("utf-8")
 
         return {
             "type": "image_url",

@@ -20,7 +20,9 @@
 set -e
 
 # Auto-activate venv
-if [ -d ~/mmrb2_env ] && [ -z "$VIRTUAL_ENV" ]; then
+if [ -d ~/mmrb2_vllm_env ] && [ -z "$VIRTUAL_ENV" ]; then
+    source ~/mmrb2_vllm_env/bin/activate
+elif [ -d ~/mmrb2_env ] && [ -z "$VIRTUAL_ENV" ]; then
     source ~/mmrb2_env/bin/activate
 fi
 

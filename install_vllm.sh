@@ -2,7 +2,7 @@
 # MMRB2 环境安装 (vLLM backend)
 set -e
 
-VENV_DIR=~/mmrb2_env
+VENV_DIR=~/mmrb2_vllm_env
 
 if [ -d "$VENV_DIR" ] && [ -f "$VENV_DIR/bin/activate" ]; then
     echo "Existing venv found at $VENV_DIR, activating..."
@@ -15,8 +15,9 @@ fi
 
 echo "Installing dependencies..."
 
-# vLLM from nightly (Qwen3.5 official recommendation)
-uv pip install torch==2.9.1 \
+# vLLM from main (Qwen3.5 official recommendation)
+# Let vLLM pull its required torch version automatically
+uv pip install \
     'vllm @ git+https://github.com/vllm-project/vllm.git@main' \
     openai json-repair Pillow tqdm datasets
 

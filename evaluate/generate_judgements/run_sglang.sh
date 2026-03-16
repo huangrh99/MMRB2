@@ -167,7 +167,28 @@ for task_info in "1 image t2i" "2 edit edit" "3 interleaved interleaved" "4 reas
     echo ""
 done
 
+# ----------------------------------------
+# Step 3: Compute scores
+# ----------------------------------------
+echo "[Step 3] Computing accuracy scores..."
+
+PRED_PREFIX="$OUTPUT_DIR/task"
+PRED_SUFFIX="_sglang_${SHORT_NAME}${THINK_SUFFIX}.json"
+SCORE_OUTPUT="$OUTPUT_DIR/scores_sglang_${SHORT_NAME}${THINK_SUFFIX}.json"
+
+python "$SCRIPT_DIR/../compute_scores/compute_accuracy.py" \
+    --task all \
+    --predictions \
+        "${PRED_PREFIX}1${PRED_SUFFIX}" \
+        "${PRED_PREFIX}2${PRED_SUFFIX}" \
+        "${PRED_PREFIX}3${PRED_SUFFIX}" \
+        "${PRED_PREFIX}4${PRED_SUFFIX}" \
+    --benchmark_dir "$BASE_DATA_PATH" \
+    --output "$SCORE_OUTPUT"
+
+echo ""
 echo "=========================================="
 echo "All tasks completed!"
-echo "Results saved to: $OUTPUT_DIR"
+echo "Judgements: $OUTPUT_DIR/task*_sglang_${SHORT_NAME}${THINK_SUFFIX}.json"
+echo "Scores:     $SCORE_OUTPUT"
 echo "=========================================="

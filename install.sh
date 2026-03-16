@@ -10,10 +10,14 @@ echo "Installing dependencies..."
 
 uv pip install torch==2.9.1 \
     'sglang[all] @ git+https://github.com/sgl-project/sglang.git#subdirectory=python' \
-    openai json-repair Pillow tqdm datasets \
-    'huggingface_hub>=0.30.0' \
-    'google-generativeai>=0.3.0' \
-    'google-genai>=1.28.0'
+    openai json-repair Pillow tqdm datasets
+
+uv pip install -U huggingface_hub \
+    google-generativeai \
+    google-genai
+
+# flash-attn: prefer prebuilt wheel, fallback to source build
+uv pip install flash-attn || uv pip install flash-attn --no-build-isolation
 
 uv pip install --no-deps 'transformers @ git+https://github.com/huggingface/transformers.git@main'
 

@@ -85,6 +85,7 @@ VLLM_ARGS=(
     --tensor-parallel-size "$TP"
     --dtype bfloat16
     --gpu-memory-utilization 0.85
+    --disable-custom-all-reduce
 )
 
 # Qwen3.5: add reasoning parser and 256K context

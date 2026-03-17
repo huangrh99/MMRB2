@@ -32,6 +32,7 @@ mkdir -p "$SCORES_DIR"
 compute_one() {
     local MODEL_NAME="$1"
     local THINK="${2:-think}"
+    local BACKEND="${3:-}"
 
     if [ "$THINK" = "nothink" ]; then
         SUFFIX="_nothink"
@@ -40,12 +41,25 @@ compute_one() {
     fi
 
     local PREFIX="$OUTPUT_DIR/task"
-    local FILE_SUFFIX="_sglang_${MODEL_NAME}${SUFFIX}.json"
-    local SCORE_FILE="$SCORES_DIR/scores_${MODEL_NAME}${SUFFIX}.json"
+
+    # Auto-detect backend if not specified
+    if [ -z "$BACKEND" ]; then
+        if [ -f "${PREFIX}1_sglang_${MODEL_NAME}${SUFFIX}.json" ]; then
+            BACKEND="sglang"
+        elif [ -f "${PREFIX}1_vllm_${MODEL_NAME}${SUFFIX}.json" ]; then
+            BACKEND="vllm"
+        else
+            echo "Skipping ${MODEL_NAME}${SUFFIX}: no judgement files found"
+            return
+        fi
+    fi
+
+    local FILE_SUFFIX="_${BACKEND}_${MODEL_NAME}${SUFFIX}.json"
+    local SCORE_FILE="$SCORES_DIR/scores_${BACKEND}_${MODEL_NAME}${SUFFIX}.json"
 
     # Check if judgement files exist
     if [ ! -f "${PREFIX}1${FILE_SUFFIX}" ]; then
-        echo "Skipping ${MODEL_NAME}${SUFFIX}: no judgement files found"
+        echo "Skipping ${MODEL_NAME}${SUFFIX} (${BACKEND}): no judgement files found"
         return
     fi
 
@@ -68,19 +82,26 @@ compute_one() {
 }
 
 if [ "${1:-}" = "all" ]; then
-    # Find all unique model names from task1_sglang_*.json files
-    for f in "$OUTPUT_DIR"/task1_sglang_*.json; do
+    # Find all unique model names from task1_{sglang,vllm}_*.json files
+    for f in "$OUTPUT_DIR"/task1_sglang_*.json "$OUTPUT_DIR"/task1_vllm_*.json; do
         [ -f "$f" ] || continue
         BASE=$(basename "$f" .json)
-        # Strip "task1_sglang_" prefix
-        MODEL_SUFFIX="${BASE#task1_sglang_}"
 
-        # Check if it's a nothink variant
+        if [[ "$BASE" == task1_sglang_* ]]; then
+            BACKEND="sglang"
+            MODEL_SUFFIX="${BASE#task1_sglang_}"
+        elif [[ "$BASE" == task1_vllm_* ]]; then
+            BACKEND="vllm"
+            MODEL_SUFFIX="${BASE#task1_vllm_}"
+        else
+            continue
+        fi
+
         if [[ "$MODEL_SUFFIX" == *_nothink ]]; then
             MODEL_NAME="${MODEL_SUFFIX%_nothink}"
-            compute_one "$MODEL_NAME" "nothink"
+            compute_one "$MODEL_NAME" "nothink" "$BACKEND"
         else
-            compute_one "$MODEL_SUFFIX" "think"
+            compute_one "$MODEL_SUFFIX" "think" "$BACKEND"
         fi
     done
 else

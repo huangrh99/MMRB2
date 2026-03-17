@@ -95,6 +95,11 @@ else
     VLLM_ARGS+=(--max-model-len 32768)
 fi
 
+# MoE models: enable expert parallel + prefix caching
+if [[ "$HF_MODEL_ID" == *A3B* || "$HF_MODEL_ID" == *A10B* || "$HF_MODEL_ID" == *A17B* || "$HF_MODEL_ID" == *A28B* || "$HF_MODEL_ID" == *A4B* ]]; then
+    VLLM_ARGS+=(--enable-expert-parallel --enable-prefix-caching)
+fi
+
 vllm serve "${VLLM_ARGS[@]}" > "$VLLM_LOG" 2>&1 &
 
 VLLM_PID=$!

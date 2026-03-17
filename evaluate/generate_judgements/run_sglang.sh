@@ -103,6 +103,11 @@ if [[ "$HF_MODEL_ID" == *Qwen3.5* || "$HF_MODEL_ID" == *Qwen3* ]]; then
     SGLANG_ARGS+=(--reasoning-parser qwen3 --context-length 262144)
 fi
 
+# MoE models: enable expert parallel
+if [[ "$HF_MODEL_ID" == *A3B* || "$HF_MODEL_ID" == *A10B* || "$HF_MODEL_ID" == *A17B* || "$HF_MODEL_ID" == *A28B* || "$HF_MODEL_ID" == *A4B* ]]; then
+    SGLANG_ARGS+=(--enable-ep-moe)
+fi
+
 if [ "$DP" -gt 1 ]; then
     SGLANG_ARGS+=(--dp-size "$DP")
 fi

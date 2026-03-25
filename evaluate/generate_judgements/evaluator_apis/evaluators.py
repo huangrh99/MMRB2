@@ -20,6 +20,9 @@ from .llm_judges import (
     InternVL35_8BPairwiseEvaluator,
     InternVL35_14BPairwiseEvaluator,
     InternVL35_38BPairwiseEvaluator,
+    InternVL35_20BA4BPairwiseEvaluator,
+    InternVL35_30BA3BPairwiseEvaluator,
+    InternVL35_241BA28BPairwiseEvaluator,
     SglangNoThinkPairwiseEvaluator,
     SglangPairwiseEvaluator,
 )
@@ -237,6 +240,42 @@ EVALUATORS = {
     },
     "internvl35-38b-pairwise": {
         "class": InternVL35_38BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-20b-a4b-pairwise": {
+        "class": InternVL35_20BA4BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-30b-a3b-pairwise": {
+        "class": InternVL35_30BA3BPairwiseEvaluator,
+        "type": EvaluatorTypes.PAIRWISE,
+        "is_api_based": False,
+        "capabilities": [
+            EvaluatorCapabilities.IMAGE,
+            EvaluatorCapabilities.EDIT,
+            EvaluatorCapabilities.INTERLEAVED,
+            EvaluatorCapabilities.TEXT,
+            EvaluatorCapabilities.REASONING,
+        ],
+    },
+    "internvl35-241b-a28b-pairwise": {
+        "class": InternVL35_241BA28BPairwiseEvaluator,
         "type": EvaluatorTypes.PAIRWISE,
         "is_api_based": False,
         "capabilities": [

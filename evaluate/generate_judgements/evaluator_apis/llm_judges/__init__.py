@@ -21,6 +21,9 @@ from .local_pairwise_evaluator import (
     InternVL35_8BPairwiseEvaluator,
     InternVL35_14BPairwiseEvaluator,
     InternVL35_38BPairwiseEvaluator,
+    InternVL35_20BA4BPairwiseEvaluator,
+    InternVL35_30BA3BPairwiseEvaluator,
+    InternVL35_241BA28BPairwiseEvaluator,
 )
 from .sglang_pairwise_evaluator import (
     SglangNoThinkPairwiseEvaluator,
@@ -45,6 +48,9 @@ __all__ = [
     "InternVL35_8BPairwiseEvaluator",
     "InternVL35_14BPairwiseEvaluator",
     "InternVL35_38BPairwiseEvaluator",
+    "InternVL35_20BA4BPairwiseEvaluator",
+    "InternVL35_30BA3BPairwiseEvaluator",
+    "InternVL35_241BA28BPairwiseEvaluator",
     "SglangNoThinkPairwiseEvaluator",
     "SglangPairwiseEvaluator",
 ]

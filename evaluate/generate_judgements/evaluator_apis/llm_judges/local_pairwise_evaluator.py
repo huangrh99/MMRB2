@@ -230,3 +230,24 @@ class InternVL35_38BPairwiseEvaluator(LocalPairwiseEvaluator):
 
     def __init__(self, device_id: int = None):
         super().__init__(model_name="internvl3.5-38b", device_id=device_id)
+
+
+class InternVL35_20BA4BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-20B-A4B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-20b-a4b", device_id=device_id)
+
+
+class InternVL35_30BA3BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-30B-A3B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-30b-a3b", device_id=device_id)
+
+
+class InternVL35_241BA28BPairwiseEvaluator(LocalPairwiseEvaluator):
+    """InternVL3.5-241B-A28B (MoE) based pairwise evaluator."""
+
+    def __init__(self, device_id: int = None):
+        super().__init__(model_name="internvl3.5-241b-a28b", device_id=device_id)

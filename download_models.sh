@@ -29,6 +29,10 @@ MODELS=(
     OpenGVLab/InternVL3_5-8B-HF
     OpenGVLab/InternVL3_5-14B-HF
     OpenGVLab/InternVL3_5-38B-HF
+    # InternVL3.5 MoE
+    OpenGVLab/InternVL3_5-GPT-OSS-20B-A4B-Preview-HF
+    OpenGVLab/InternVL3_5-30B-A3B-HF
+    OpenGVLab/InternVL3_5-241B-A28B-HF
 )
 
 cd "$DOWNLOAD_DIR"

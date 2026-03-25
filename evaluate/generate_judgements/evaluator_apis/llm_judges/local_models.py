@@ -63,6 +63,16 @@ class LocalModelManager:
             "huggingface_id": "OpenGVLab/InternVL3_5-38B-HF",
             "tp": True,
         },
+        "internvl3.5-20b-a4b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-GPT-OSS-20B-A4B-Preview-HF",
+        },
+        "internvl3.5-30b-a3b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-30B-A3B-HF",
+        },
+        "internvl3.5-241b-a28b": {
+            "huggingface_id": "OpenGVLab/InternVL3_5-241B-A28B-HF",
+            "tp": True,
+        },
     }
 
     def __init__(

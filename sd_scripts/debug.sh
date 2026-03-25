@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # ==================== Config ====================
 init_config=/mnt/hdfs/seed_wl/jianxiaowen.24/InternVL2-26B/

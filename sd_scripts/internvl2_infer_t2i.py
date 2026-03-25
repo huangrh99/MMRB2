@@ -315,8 +315,6 @@ if __name__== "__main__" :
     rank = dist.get_rank()
     world_size = dist.get_world_size()
 
-    
-
     # 清理未使用的显存
     torch.cuda.empty_cache()
     # 重置显存统计信息
@@ -373,11 +371,10 @@ if __name__== "__main__" :
               f'processing items [{start_idx}, {end_idx}) / {total}')
 
         output_json_path = os.path.join(output_dir, f"{rank:03}.json")
-        w = open(output_json_path, 'w')
-        print('start')
+        with open(output_json_path, 'w') as w:
+            print('start')
 
-        for item_idx, item in enumerate(select_items):
-            try:
+            for item_idx, item in enumerate(select_items):
                 prompt = item['prompt']
                 img1_path = item['img1_path']
                 img2_path = item['img2_path']
@@ -400,11 +397,6 @@ if __name__== "__main__" :
                 print(f'[{item_idx}/{len(select_items)}] {img1_path} vs {img2_path}: '
                       f'reward={score:.4f}, yes={yes_s:.4f}, no={no_s:.4f}')
 
-            except Exception as e:
-                print(f"Error processing item {start_idx + item_idx}: {e}")
-                continue
-
-        w.close()
         print(f'{output_json_path} complete')
 
     else:
